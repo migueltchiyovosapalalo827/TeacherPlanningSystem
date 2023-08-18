@@ -1,47 +1,75 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('auth.app')
+@section('content')
+    <div class="auth-fluid-form-box">
+        <div class="align-items-center d-flex h-100">
+            <div class="card-body">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+                <!-- Logo -->
+                <div class="auth-brand text-center text-lg-start">
+                    <a href="index.html" class="logo-dark">
+                        <span><img src="assets/images/logo-dark.png" alt="" height="18"></span>
+                    </a>
+                    <a href="index.html" class="logo-light">
+                        <span><img src="assets/images/logo.png" alt="" height="18"></span>
+                    </a>
+                </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+                <!-- title-->
+                <h4 class="mt-0">Teacher Planning System</h4>
+                <p class="text-muted mb-4">Digite seu endereço de e-mail e senha para acessar a conta.</p>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+                <!-- form -->
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="emailaddress" class="form-label">Email</label>
+                        <input class="form-control @error('email') is-invalid @enderror" type="email" id="emailaddress"
+                            name="email" value="{{ old('email') }}" placeholder="digite o teu email">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        @if (Route::has('password.request'))
+                            <a class="text-muted float-end" href="{{ route('password.request') }}">
+                                Esqueceu a senha?
+                            </a>
+                        @endif
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+                        <label for="password" class="form-label ">Password</label>
+                        <input class="form-control @error('password') is-invalid  @enderror" name="password" value="{{old('password')}}" type="password" id="password"
+                            value="{{ old('password') }}" placeholder="digite a tua  password">
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+                    <div class="d-grid mb-0 text-center">
+                        <button class="btn btn-primary" type="submit"><i class="mdi mdi-login"></i> Entrar </button>
+                    </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+                </form>
+                <!-- end form-->
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
 
-            <x-primary-button class="ml-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+
+            </div> <!-- end .card-body -->
+        </div> <!-- end .align-items-center.d-flex.h-100-->
+    </div>
+    <!-- end auth-fluid-form-box-->
+
+    <!-- Auth fluid right content -->
+    <div class="auth-fluid-right text-center">
+        <div class="auth-user-testimonial">
+            <h2 class="mb-3">Teacher Planning System!</h2>
+            <p class="lead"><i class="mdi mdi-format-quote-open"></i>E uma ferramenta digital projetada para auxiliar os Professores no planeamento das suas atividades de ensino . <i
+                    class="mdi mdi-format-quote-close"></i>
+            </p>
+            <p>
+
+            </p>
+        </div> <!-- end auth-user-testimonial-->
+    </div>
+    <!-- end Auth fluid right content -->
+    </div>
+@endsection

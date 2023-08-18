@@ -1,69 +1,130 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Lista de usuarios') }}
-        </h2>
-    </x-slot>
-    <!-- Users Section -->
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+@extends('layouts.app')
+@section('css')
+    <!-- third party css -->
+    <link href="{{ Vite::asset('resources/assets/css/vendor/dataTables.bootstrap5.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ Vite::asset('resources/assets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet" type="text/css" />
+    <!-- third party css end -->
+@endsection
+@section('content')
+    <!-- Start Content-->
+    <div class="container-fluid">
 
-            <!-- User List -->
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <div class="flex justify-end">
-                    <a href="{{ route('user.create') }}"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Cradastar
-                        Usuarios</a>
-                </div>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Nome</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Email</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Acção</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- User Row -->
-                        @forelse ($users as $item)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <a class="text-blue-500 hover:text-blue-700"
-                                        href="{{ route('user.edit', $item->id) }}">Editar</a>
-                                    <form method="POST" action="{{ route('user.destroy', $item->id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="text-red-500 hover:text-red-700">Eliminar</button>
-                                    </form>
-
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="px-6 py-4 whitespace-nowrap text-center font-semibold">não
-                                    existe usuarios cadastrado no momento</td>
-                            </tr>
-                        @endforelse
-
-                        <!-- More user rows -->
-                    </tbody>
-                </table>
-                <div class="flex justify-center">
-                    @if (session('success'))
-                        <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                            class="text-sm text-gray-600">{{ session('success') }}</p>
-                    @endif
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">TPS</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Utilizador</a></li>
+                            <li class="breadcrumb-item active">listar</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Utilizadores</h4>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- end page title -->
 
-</x-app-layout>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-5">
+                                <a href="{{ route('user.create') }}" class="btn btn-danger mb-2"><i
+                                        class="mdi mdi-plus-circle me-2"></i> cadastar Utilizador</a>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="text-sm-end">
+                                    <button type="button" class="btn btn-success mb-2 me-1"><i
+                                            class="mdi mdi-cog"></i></button>
+                                    <button type="button" class="btn btn-light mb-2 me-1">Import</button>
+                                    <button type="button" class="btn btn-light mb-2">Export</button>
+                                </div>
+                            </div><!-- end col-->
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="basic-datatable" class="table table-centered table-striped dt-responsive nowrap w-100"
+                               >
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20px;">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="customCheck1">
+                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
+                                            </div>
+                                        </th>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th style="width: 75px;">Acção</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($users as $item)
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="customCheck2">
+                                                    <label class="form-check-label" for="customCheck2">&nbsp;</label>
+                                                </div>
+                                            </td>
+                                            <td class="table-user">
+                                                {{ $item->name }}
+                                            </td>
+
+                                            <td>
+                                                {{ $item->email }}
+                                            </td>
+
+
+                                            <td>
+                                                <span class="badge badge-success-lighten">Active</span>
+                                            </td>
+
+                                            <td>
+                                                <a href="{{ route('user.edit', $item->id) }}" class="action-icon"> <i
+                                                        class="mdi mdi-square-edit-outline"></i></a>
+                                                <form method="POST" action="{{ route('user.destroy', $item->id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="{{ route('user.destroy', $item->id) }}"
+                                                        onclick="event.preventDefault();
+                                            this.closest('form').submit();"
+                                                        class="action-icon text-red-500 hover:text-red-700"> <i
+                                                            class="mdi mdi-delete"></i></a>
+                                                </form>
+
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4"
+                                                class="px-6 py-4 whitespace-nowrap text-center font-semibold">não
+                                                existe usuarios cadastrado no momento</td>
+                                        </tr>
+                                    @endforelse
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- container -->
+@endsection
+@section('js')
+    <script src="{{ Vite::asset('resources/assets/js/vendor/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ Vite::asset('resources/assets/js/vendor/dataTables.bootstrap5.js') }}"></script>
+    <script src="{{ Vite::asset('resources/assets/js/vendor/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ Vite::asset('resources/assets/js/vendor/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ Vite::asset('resources/assets/js/vendor/dataTables.checkboxes.min.js') }}"></script>
+    <!-- third party js ends -->
+    <!-- demo app -->
+    <script src="{{ Vite::asset('resources/assets/js/pages/demo.datatable-init.js') }}"></script>
+@endsection

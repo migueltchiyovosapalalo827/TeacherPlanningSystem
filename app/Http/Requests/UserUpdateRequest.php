@@ -11,7 +11,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('update user', $this->route('user'));
     }
 
     /**
@@ -21,7 +21,9 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email'],
+            'email' =>
+            'required|string|email|max:255|unique:users,email,' .
+            $this->route('user')->id,
         ];
     }
 }
